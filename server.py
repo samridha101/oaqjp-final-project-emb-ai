@@ -10,23 +10,20 @@ def index():
 @app.route('/emotionDetector', methods=['GET', 'POST'])
 def emotion_detector_route():
     if request.method == 'GET':
-        # For GET request, get the query parameter
         text_to_analyze = request.args.get("textToAnalyze")
     elif request.method == 'POST':
-        # For POST request, get the form data
         text_to_analyze = request.form.get("textToAnalyze")
     else:
         return "Invalid method"
 
     if not text_to_analyze:
-        return "No text to analyze provided."
+        return "Invalid text! Please try again."  # Handle blank input
 
-    # Call the emotion_detector function to analyze the text
     response = emotion_detector(text_to_analyze)
-    
-    if response is None:
-        return "Invalid input or server error."
-    
+
+    if response is None or response['dominant_emotion'] is None:
+        return "Invalid text! Please try again."  # Handle invalid or error responses
+
     result = (
         f"For the given statement, the system response is "
         f"'anger': {response['anger']}, 'disgust': {response['disgust']}, "
